@@ -2726,7 +2726,7 @@ input, select, textarea {
 		.panel.color2 {
 			background-image: url("../../images/overlay.png"), linear-gradient(45deg, rgba(114, 97, 147, 0.25) 25%, rgba(227, 123, 124, 0.25) 50%, rgba(255, 228, 180, 0.25));
 			background-size: 128px 128px, auto;
-			background-color: #e37b7c;
+			background-color: #0b3937;
 		}
 
 		.panel.color3 {
@@ -2813,7 +2813,7 @@ input, select, textarea {
 			.panel > *.color2 {
 				background-image: url("../../images/overlay.png"), linear-gradient(135deg, rgba(114, 97, 147, 0.25) 25%, rgba(227, 123, 124, 0.25) 50%, rgba(255, 228, 180, 0.25));
 				background-size: 128px 128px, auto;
-				background-color: #e37b7c;
+				background-color: #0b3937;
 			}
 
 			.panel > *.color3 {
@@ -3684,53 +3684,54 @@ input, select, textarea {
     		overflow-y: auto;
     		overflow-x: hidden;
 
-    		scroll-snap-type: y mandatory;/* enables snapping */
+    		scroll-snap-type: y mandatory;
     		-webkit-overflow-scrolling: touch;
 			
-    		margin: 0 0 5rem 0;           /* keep if you like the space for the copyright */
+    		margin: 0 0 5rem 0;
     		box-shadow: 0 0.25rem 1.5rem 0.25rem rgba(46, 43, 55, 0.5);
-			padding-bottom: calc(3.25rem + env(safe-area-inset-bottom)); /* Reserve space for the footer so it doesn't overlap the last panel */
+			padding-bottom: calc(3.25rem + env(safe-area-inset-bottom));
 		}
 
-  		/* Put the copyright back into normal flow on mobile */
 			#wrapper > .copyright {
 				display: block;
-				position: static;       /* override desktop absolute */
+				position: static;
 				bottom: auto;
 				right: auto;
 				width: 100%;
 				text-align: center;
-				margin: 0.5rem 0 0;    /* small top gap; tweak if needed */
+				margin: 0.5rem 0 0;
 				scroll-snap-align: none;
 			}
 
-			/* 1) FIRST PANEL (“Hi, my name is...”) */
-  			/* a) Move the text box to the bottom */
   			#intro.panel.banner {
     			display: flex;
-    			flex-direction: column;     /* image above, text below on phones */
-				min-height: 100svh;   /* ensure the whole panel is a screen tall */
+    			flex-direction: column;
+				min-height: 100svh;
   			}
   
 			#intro.panel.banner .image { order: 1; }
   			#intro.panel.banner .content {
     			order: 2;
-    			margin-top: auto;           /* pushes the text box to the bottom */
-				flex: 0 0 auto;       /* don't grow */
+    			margin-top: auto;
+				flex: 0 0 auto;
   			}
 
-  			/* b) Adjust the photo crop so Wolfie’s face shows */
-  			/* establish a taller hero in this panel and aim the crop higher */
   			#intro .image { 
-				flex: 1 1 auto;       /* grow to fill remaining space */
-  				height: auto;         /* override any svh fixed heights */
+				flex: 1 1 auto;
+  				height: auto;
   				position: relative;
 			}
   			#intro .image img { 
 				width: 100%;
 				height: 100%;
 				object-fit: cover;
-				object-position: 50% 45%; /* tweak for face placement */
+				object-position: 50% 45%;
+			}
+
+			#intro .actions .button.icon.circle {
+				transform: rotate(90deg);
+				cursor: default;
+				pointer-events: none;
 			}
 
   			#toys .image       {
