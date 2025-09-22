@@ -29,6 +29,7 @@ article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;}
 
+	
 body {
 	line-height: 1;
 }
@@ -2765,14 +2766,43 @@ input, select, textarea {
 		}
 
 	@media screen and (max-width: 736px) {
-
+		
+		/* Panel: one screen tall, snaps in, scrolls internally if needed */
 		.panel {
-			-moz-flex-direction: column;
-			-webkit-flex-direction: column;
-			-ms-flex-direction: column;
-			flex-direction: column;
-			height: auto;
+  			display: flex;
+  			flex-direction: column;
+  			min-height: 100svh;      /* key change (instead of height:auto) */
+  			height: auto;            /* lets content taller than 100svh still grow */
+  			scroll-snap-align: start;
+  			overflow-x: hidden;
+  			overflow-y: auto;
 		}
+
+		/* Ensure the image container establishes height/positioning */
+  		.panel .image.main,
+  		.panel .image.fit {
+    		position: relative;            /* required because child img can be absolute */
+    		height: 40svh;                 /* adjust 35–45svh to taste */
+    		margin-bottom: 1.5rem;         /* keep existing rhythm */
+  		}
+
+  		/* Cover + default crop (works with/without data-position) */
+  		.panel .image.main img,
+  		.panel .image.fit img {
+    		width: 100%;
+    		height: 100%;
+    		object-fit: cover;
+    		object-position: 50% 35%;      /* lift crop slightly for faces */
+    		display: block;
+  		}
+
+		  /* First panel: keep more of the top in view (e.g., Wolfie’s face/ears) */
+  		.panel:first-of-type .image.main { height: 45svh; }
+  		.panel:first-of-type .image.main img { object-position: 50% 22%; }
+
+  		/* Last panel: usually text-heavy—shrink hero so copy sits higher */
+  		.panel:last-of-type .image.main { height: 30svh; }
+  		.panel:last-of-type .image.main img { object-position: 50% 40%; }
 
 			.panel > *.color1 {
 				background-image: url("../../images/overlay.png"), linear-gradient(135deg, rgba(114, 97, 147, 0.25) 25%, rgba(227, 123, 124, 0.25) 50%, rgba(255, 228, 180, 0.25));
@@ -3645,23 +3675,107 @@ input, select, textarea {
 	@media screen and (max-width: 736px) {
 
 		#wrapper {
+			
 			-moz-flex-direction: column;
 			-webkit-flex-direction: column;
 			-ms-flex-direction: column;
 			flex-direction: column;
-			height: auto;
-			margin: 0 0 5rem 0;
-			box-shadow: 0 0.25rem 1.5rem 0.25rem rgba(46, 43, 55, 0.5);
+			height: 100svh;
+    		overflow-y: auto;
+    		overflow-x: hidden;
+
+    		scroll-snap-type: y mandatory;/* enables snapping */
+    		-webkit-overflow-scrolling: touch;
+			
+    		margin: 0 0 5rem 0;           /* keep if you like the space for the copyright */
+    		box-shadow: 0 0.25rem 1.5rem 0.25rem rgba(46, 43, 55, 0.5);
+			padding-bottom: calc(3.25rem + env(safe-area-inset-bottom)); /* Reserve space for the footer so it doesn't overlap the last panel */
 		}
+
+  		/* Put the copyright back into normal flow on mobile */
+			#wrapper > .copyright {
+				display: block;
+				position: static;       /* override desktop absolute */
+				bottom: auto;
+				right: auto;
+				width: 100%;
+				text-align: center;
+				margin: 0.5rem 0 0;    /* small top gap; tweak if needed */
+				scroll-snap-align: none;
+			}
+
+			/* 1) FIRST PANEL (“Hi, my name is...”) */
+  			/* a) Move the text box to the bottom */
+  			#intro.panel.banner {
+    			display: flex;
+    			flex-direction: column;     /* image above, text below on phones */
+				min-height: 100svh;   /* ensure the whole panel is a screen tall */
+  			}
+  
+			#intro.panel.banner .image { order: 1; }
+  			#intro.panel.banner .content {
+    			order: 2;
+    			margin-top: auto;           /* pushes the text box to the bottom */
+				flex: 0 0 auto;       /* don't grow */
+  			}
+
+  			/* b) Adjust the photo crop so Wolfie’s face shows */
+  			/* establish a taller hero in this panel and aim the crop higher */
+  			#intro .image { 
+				flex: 1 1 auto;       /* grow to fill remaining space */
+  				height: auto;         /* override any svh fixed heights */
+  				position: relative;
+			}
+  			#intro .image img { 
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				object-position: 50% 45%; /* tweak for face placement */
+			}
+
+  			#toys .image       {
+    			overflow: hidden;
+			}
+  			#toys .image img   {
+				position: absolute;
+    			bottom: 0;
+				left: -5%;
+				transform: translate(-50%, -68%) rotate(90deg) scale(0.55);
+				transform-origin: bottom center;
+
+    			height: 100%;
+    			width: auto;
+    			min-width: 120%;
+    			min-height: 120%;
+			}		
+
+			/* Last panel slightly shorter so footer is visible */
+			#the-end {
+  				min-height: calc(100svh - 3.25rem);
+				display: flex;
+    			flex-direction: column;
+			}
+			/* 3) LAST PANEL (“The End”) */
+  			/* make the white overlay fill the whole panel and center the copy */
+  			#the-end .intro {
+				width: 100%;
+				min-height: auto;         /* fill the full screen */
+				height: auto;         /* belt + suspenders */
+    			flex: 1 1 auto;       /* let it take available space inside #the-end */
+				margin: 0;
+				padding: 2.5rem 1.25rem;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+
+				/* stronger white overlay (but still see the gradient subtly) */
+				background: rgba(255, 255, 255, 0.02);
+				color: #fff;
+				backdrop-filter: saturate(1.1) blur(0.5px); /* optional (nice on iOS) */
+		 	}
 
 			#wrapper > .scrollZone {
 				display: none;
-			}
-
-			#wrapper > .copyright {
-				display: block;
-				width: 100%;
-				text-align: center;
 			}
 
 			body.is-preload #wrapper {
@@ -3670,9 +3784,8 @@ input, select, textarea {
 				-ms-transform: translateY(1rem);
 				transform: translateY(1rem);
 			}
-
-	}
-
+		}
+	
 	@media screen and (max-width: 480px) {
 
 		#wrapper {
